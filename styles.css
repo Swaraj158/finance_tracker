@@ -304,6 +304,7 @@ input[type="number"] {
         top: max(10px, env(safe-area-inset-top));
     }
 }
+
 /* Transa
 ction List Styles */
 .transactions-container {
@@ -479,6 +480,11 @@ ction List Styles */
     color: #856404;
 }
 
+.payment-other {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
 .no-transactions {
     text-align: center;
     padding: 40px 20px;
@@ -506,31 +512,31 @@ ction List Styles */
     .transactions-container {
         padding: 25px;
     }
-    
+
     .summary-cards {
         gap: 15px;
     }
-    
+
     .summary-card {
         padding: 15px;
     }
-    
+
     .summary-value {
         font-size: 18px;
     }
-    
+
     .filter-row {
         gap: 15px;
     }
-    
+
     .transaction-item {
         padding: 15px;
     }
-    
+
     .transaction-category {
         font-size: 15px;
     }
-    
+
     .transaction-amount {
         font-size: 18px;
     }
@@ -540,7 +546,7 @@ ction List Styles */
     .filter-row {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
-    
+
     .clear-filters-btn {
         grid-column: span 2;
         max-width: 200px;
