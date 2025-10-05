@@ -39,6 +39,20 @@ class FinanceTracker {
 
     setupForm() {
         const form = document.getElementById('expense-form');
+        const paymentModeSelect = document.getElementById('payment-mode');
+        const paymentCommentGroup = document.getElementById('payment-comment-group');
+
+        // Handle payment mode change to show/hide payment comment field
+        paymentModeSelect.addEventListener('change', (e) => {
+            const selectedMode = e.target.value;
+            if (selectedMode && selectedMode !== 'cash') {
+                paymentCommentGroup.style.display = 'block';
+            } else {
+                paymentCommentGroup.style.display = 'none';
+                document.getElementById('payment-comment').value = '';
+            }
+        });
+
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleFormSubmit(e);
@@ -56,16 +70,17 @@ class FinanceTracker {
         const expense = {
             id: Date.now().toString(),
             amount: parseFloat(formData.get('amount')),
-            paymentMode: formData.get('paymentMode'),
-            category: formData.get('category'),
-            date: formData.get('date'),
+            paymentMode: formData.get('paymentMode') || 'cash',
+            paymentComment: formData.get('paymentComment') || '',
+            category: formData.get('category') || 'others',
+            date: formData.get('date') || new Date().toISOString().split('T')[0],
             remarks: formData.get('remarks') || '',
             timestamp: new Date().toISOString()
         };
 
-        // Validate required fields
-        if (!expense.amount || !expense.paymentMode || !expense.category || !expense.date) {
-            this.showNotification('Please fill in all required fields', 'error');
+        // Only validate amount (required field)
+        if (!expense.amount || expense.amount <= 0) {
+            this.showNotification('Please enter a valid amount', 'error');
             return;
         }
 
@@ -228,6 +243,8 @@ class FinanceTracker {
             });
 
             const paymentClass = `payment-${expense.paymentMode}`;
+            const paymentDisplay = expense.paymentComment && expense.paymentMode !== 'cash' ? 
+                `${expense.paymentMode} (${expense.paymentComment})` : expense.paymentMode;
             const remarksHTML = expense.remarks ?
                 `<div class="transaction-remarks">${expense.remarks}</div>` : '';
 
@@ -236,7 +253,7 @@ class FinanceTracker {
                     <div class="transaction-left">
                         <div class="transaction-category">${expense.category}</div>
                         <div class="transaction-details">
-                            <span class="payment-mode-badge ${paymentClass}">${expense.paymentMode}</span>
+                            <span class="payment-mode-badge ${paymentClass}">${paymentDisplay}</span>
                         </div>
                         <div class="transaction-date">${date}</div>
                         ${remarksHTML}
