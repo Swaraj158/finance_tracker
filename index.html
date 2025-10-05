@@ -68,10 +68,56 @@
                 </div>
             </div>
 
-            <!-- Transactions List (placeholder) -->
+            <!-- Transactions List -->
             <div id="list-page" class="page">
-                <h2>Transaction History</h2>
-                <p>Coming soon...</p>
+                <div class="transactions-container">
+                    <div class="transactions-header">
+                        <h2>Transaction History</h2>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <span class="summary-label">Total Spent</span>
+                                <span class="summary-value" id="total-spent">₹0</span>
+                            </div>
+                            <div class="summary-card">
+                                <span class="summary-label">This Month</span>
+                                <span class="summary-value" id="month-spent">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filters-container">
+                        <div class="filter-row">
+                            <select id="filter-payment" class="filter-select">
+                                <option value="">All Payment Modes</option>
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                            <select id="filter-category" class="filter-select">
+                                <option value="">All Categories</option>
+                                <option value="food">Food</option>
+                                <option value="grocery">Grocery</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="others">Others</option>
+                            </select>
+                        </div>
+                        <div class="filter-row">
+                            <input type="date" id="filter-date-from" class="filter-input" placeholder="From Date">
+                            <input type="date" id="filter-date-to" class="filter-input" placeholder="To Date">
+                        </div>
+                        <button id="clear-filters" class="clear-filters-btn">Clear Filters</button>
+                    </div>
+
+                    <!-- Transaction List -->
+                    <div class="transactions-list" id="transactions-list">
+                        <div class="no-transactions" id="no-transactions">
+                            <p>No transactions found</p>
+                            <button class="nav-btn" onclick="showAddPage()">Add Your First Expense</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Dashboard (placeholder) -->
