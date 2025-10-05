@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#e74c3c">
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Finance Tracker</h1>
+            <nav>
+                <button class="nav-btn active" data-page="add">Add Expense</button>
+                <button class="nav-btn" data-page="list">View Transactions</button>
+                <button class="nav-btn" data-page="dashboard">Dashboard</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Add Expense Form -->
+            <div id="add-page" class="page active">
+                <div class="form-container">
+                    <h2>Add New Expense</h2>
+                    <form id="expense-form">
+                        <div class="form-group">
+                            <label for="amount">Amount Spent *</label>
+                            <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment-mode">Payment Mode *</label>
+                            <select id="payment-mode" name="paymentMode" required>
+                                <option value="">Select payment mode</option>
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select category</option>
+                                <option value="food">Food</option>
+                                <option value="grocery">Grocery</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="others">Others</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date">Date *</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="remarks">Remarks</label>
+                            <textarea id="remarks" name="remarks" placeholder="Add any comments about this expense..."></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Add Expense</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Transactions List (placeholder) -->
+            <div id="list-page" class="page">
+                <h2>Transaction History</h2>
+                <p>Coming soon...</p>
+            </div>
+
+            <!-- Dashboard (placeholder) -->
+            <div id="dashboard-page" class="page">
+                <h2>Dashboard</h2>
+                <p>Coming soon...</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="notification" class="notification"></div>
+    <script src="script.js"></script>
+</body>
+</html>
