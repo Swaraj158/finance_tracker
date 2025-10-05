@@ -32,18 +32,24 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="payment-mode">Payment Mode *</label>
-                            <select id="payment-mode" name="paymentMode" required>
+                            <label for="payment-mode">Payment Mode</label>
+                            <select id="payment-mode" name="paymentMode">
                                 <option value="">Select payment mode</option>
                                 <option value="cash">Cash</option>
                                 <option value="card">Card</option>
                                 <option value="upi">UPI</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
 
+                        <div class="form-group" id="payment-comment-group" style="display: none;">
+                            <label for="payment-comment">Payment Method Details</label>
+                            <input type="text" id="payment-comment" name="paymentComment" placeholder="e.g., Bank transfer, Cheque, etc.">
+                        </div>
+
                         <div class="form-group">
-                            <label for="category">Category *</label>
-                            <select id="category" name="category" required>
+                            <label for="category">Category</label>
+                            <select id="category" name="category">
                                 <option value="">Select category</option>
                                 <option value="food">Food</option>
                                 <option value="grocery">Grocery</option>
@@ -54,8 +60,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="date">Date *</label>
-                            <input type="date" id="date" name="date" required>
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date">
                         </div>
 
                         <div class="form-group">
@@ -93,6 +99,7 @@
                                 <option value="cash">Cash</option>
                                 <option value="card">Card</option>
                                 <option value="upi">UPI</option>
+                                <option value="other">Other</option>
                             </select>
                             <select id="filter-category" class="filter-select">
                                 <option value="">All Categories</option>
