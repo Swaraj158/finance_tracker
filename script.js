@@ -1,4 +1,24 @@
 // Finance Tracker App
+
+// Maps stored category values to display labels. The stored value is kept
+// stable so existing user data keeps matching the dropdown and filters;
+// only the displayed text changes here.
+const CATEGORY_LABELS = {
+    food: 'Food Order',
+    grocery: 'Grocery',
+    shopping: 'Shopping',
+    restaurant: 'Restaurant',
+    travel: 'Travel',
+    others: 'Others'
+};
+
+// Returns the display label for a stored category value. Unknown or empty
+// values fall back gracefully so old/custom data still renders.
+function categoryLabel(value) {
+    if (!value) return 'Others';
+    return CATEGORY_LABELS[value] || (value.charAt(0).toUpperCase() + value.slice(1));
+}
+
 class FinanceTracker {
     constructor() {
         this.expenses = this.loadExpenses();
@@ -11,6 +31,7 @@ class FinanceTracker {
         this.setTodayDate();
         this.setupTransactionFilters();
         this.renderTransactions();
+        this.setupTheme();
     }
 
     setupNavigation() {
@@ -40,23 +61,130 @@ class FinanceTracker {
     setupForm() {
         const form = document.getElementById('expense-form');
         const paymentModeSelect = document.getElementById('payment-mode');
-        const paymentCommentGroup = document.getElementById('payment-comment-group');
 
-        // Handle payment mode change to show/hide payment comment field
+        // Show the payment-method details that match the selected mode.
         paymentModeSelect.addEventListener('change', (e) => {
-            const selectedMode = e.target.value;
-            if (selectedMode && selectedMode !== 'cash') {
-                paymentCommentGroup.style.display = 'block';
-            } else {
-                paymentCommentGroup.style.display = 'none';
-                document.getElementById('payment-comment').value = '';
-            }
+            this.updatePaymentDetails(e.target.value);
+        });
+
+        // Reveal the "Other" free-text box only when "Other" is chosen (Card).
+        document.querySelectorAll('input[name="cardOption"]').forEach(radio => {
+            radio.addEventListener('change', () => this.toggleOtherText('card', radio.value === '__other__'));
+        });
+
+        // Reveal the "Other" free-text box only when "Other" is chosen (UPI).
+        document.querySelectorAll('input[name="upiOption"]').forEach(radio => {
+            radio.addEventListener('change', () => this.toggleOtherText('upi', radio.value === '__other__'));
         });
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleFormSubmit(e);
         });
+    }
+
+    // Show the payment-method details UI for the chosen mode. Card and UPI
+    // reveal predefined radio options; the "Other" payment mode keeps a
+    // free-text box; Cash shows nothing. This only drives the input UI — the
+    // stored paymentComment field is unchanged.
+    updatePaymentDetails(paymentMode) {
+        const group = document.getElementById('payment-comment-group');
+        if (!group) return;
+
+        ['card-options', 'upi-options', 'other-options'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+
+        if (paymentMode === 'card') {
+            group.style.display = 'block';
+            const card = document.getElementById('card-options');
+            if (card) card.style.display = 'grid';
+        } else if (paymentMode === 'upi') {
+            group.style.display = 'block';
+            const upi = document.getElementById('upi-options');
+            if (upi) upi.style.display = 'grid';
+        } else if (paymentMode === 'other') {
+            group.style.display = 'block';
+            const other = document.getElementById('other-options');
+            if (other) other.style.display = 'block';
+        } else {
+            group.style.display = 'none';
+        }
+    }
+
+    // Show or hide the "Other" free-text input for the Card / UPI radio group.
+    toggleOtherText(mode, isOther) {
+        const textInput = document.getElementById(`${mode}-other-text`);
+        if (!textInput) return;
+        if (isOther) {
+            textInput.style.display = 'block';
+        } else {
+            textInput.style.display = 'none';
+            textInput.value = '';
+        }
+    }
+
+    // Resolve the value to store in paymentComment for the active mode.
+    getPaymentComment(paymentMode) {
+        if (paymentMode === 'card' || paymentMode === 'upi') {
+            const groupName = paymentMode === 'card' ? 'cardOption' : 'upiOption';
+            const selected = document.querySelector(`input[name="${groupName}"]:checked`);
+            if (!selected) return '';
+            if (selected.value === '__other__') {
+                const textEl = document.getElementById(`${paymentMode}-other-text`);
+                return textEl ? textEl.value.trim() : '';
+            }
+            return selected.value;
+        }
+        if (paymentMode === 'other') {
+            const textEl = document.getElementById('other-payment-text');
+            return textEl ? textEl.value.trim() : '';
+        }
+        return ''; // cash or none selected
+    }
+
+    // Clear and hide the payment-method details UI (used after form reset).
+    resetPaymentDetails() {
+        this.updatePaymentDetails('');
+        ['card', 'upi'].forEach(mode => {
+            const el = document.getElementById(`${mode}-other-text`);
+            if (el) {
+                el.style.display = 'none';
+                el.value = '';
+            }
+        });
+    }
+
+    // Apply the saved theme preference and wire up the toggle button. The
+    // theme lives in its own localStorage key, so expense data is never
+    // touched. The inline <head> script applies the theme before paint; this
+    // keeps the button label in sync and handles toggling.
+    setupTheme() {
+        const toggle = document.getElementById('theme-toggle');
+        if (!toggle) return;
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        toggle.textContent = current === 'dark' ? '☀️' : '🌙';
+        toggle.setAttribute('aria-label', current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        toggle.addEventListener('click', () => this.toggleTheme());
+    }
+
+    toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try {
+            localStorage.setItem('financeTracker_theme', next);
+        } catch (error) {
+            // Ignore storage errors; the theme still applies for the session.
+        }
+        const toggle = document.getElementById('theme-toggle');
+        if (toggle) {
+            toggle.textContent = next === 'dark' ? '☀️' : '🌙';
+            toggle.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        }
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', next === 'dark' ? '#1b1e25' : '#e74c3c');
     }
 
     setTodayDate() {
@@ -67,11 +195,12 @@ class FinanceTracker {
 
     handleFormSubmit(e) {
         const formData = new FormData(e.target);
+        const paymentMode = formData.get('paymentMode') || 'cash';
         const expense = {
             id: Date.now().toString(),
             amount: parseFloat(formData.get('amount')),
-            paymentMode: formData.get('paymentMode') || 'cash',
-            paymentComment: formData.get('paymentComment') || '',
+            paymentMode: paymentMode,
+            paymentComment: this.getPaymentComment(paymentMode),
             category: formData.get('category') || 'others',
             date: formData.get('date') || new Date().toISOString().split('T')[0],
             remarks: formData.get('remarks') || '',
@@ -94,6 +223,7 @@ class FinanceTracker {
         // Reset form
         e.target.reset();
         this.setTodayDate();
+        this.resetPaymentDetails();
 
         console.log('Expense added:', expense);
         console.log('Total expenses:', this.expenses.length);
@@ -251,7 +381,7 @@ class FinanceTracker {
             return `
                 <div class="transaction-item">
                     <div class="transaction-left">
-                        <div class="transaction-category">${expense.category}</div>
+                        <div class="transaction-category">${categoryLabel(expense.category)}</div>
                         <div class="transaction-details">
                             <span class="payment-mode-badge ${paymentClass}">${paymentDisplay}</span>
                         </div>

@@ -7,12 +7,28 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#e74c3c">
     <title>Finance Tracker</title>
+    <script>
+        // Apply the saved theme before first paint to avoid a flash. The theme
+        // preference is stored separately from expense data.
+        (function () {
+            try {
+                var t = localStorage.getItem('financeTracker_theme');
+                t = (t === 'light' || t === 'dark') ? t : 'dark';
+            } catch (e) {
+                t = 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', t);
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', t === 'dark' ? '#1b1e25' : '#e74c3c');
+        })();
+    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>💰 Finance Tracker</h1>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">☀️</button>
             <nav>
                 <button class="nav-btn active" data-page="add">Add Expense</button>
                 <button class="nav-btn" data-page="list">View Transactions</button>
@@ -43,18 +59,44 @@
                         </div>
 
                         <div class="form-group" id="payment-comment-group" style="display: none;">
-                            <label for="payment-comment">Payment Method Details</label>
-                            <input type="text" id="payment-comment" name="paymentComment" placeholder="e.g., Bank transfer, Cheque, etc.">
+                            <label>Payment Method Details</label>
+
+                            <!-- Card options -->
+                            <div id="card-options" class="payment-options" style="display:none;">
+                                <label class="radio-option"><input type="radio" name="cardOption" value="Axis Flipkart"> Axis Flipkart</label>
+                                <label class="radio-option"><input type="radio" name="cardOption" value="Axis Neo"> Axis Neo</label>
+                                <label class="radio-option"><input type="radio" name="cardOption" value="HDFC Swiggy"> HDFC Swiggy</label>
+                                <label class="radio-option"><input type="radio" name="cardOption" value="Indusind Cred"> Indusind Cred</label>
+                                <label class="radio-option"><input type="radio" name="cardOption" value="HSBC Platinum"> HSBC Platinum</label>
+                                <label class="radio-option"><input type="radio" name="cardOption" value="__other__"> Other</label>
+                                <input type="text" id="card-other-text" class="payment-other-text" placeholder="Specify your card" style="display:none;">
+                            </div>
+
+                            <!-- UPI options -->
+                            <div id="upi-options" class="payment-options" style="display:none;">
+                                <label class="radio-option"><input type="radio" name="upiOption" value="UPI Lite"> UPI Lite</label>
+                                <label class="radio-option"><input type="radio" name="upiOption" value="Cred UPI"> Cred UPI</label>
+                                <label class="radio-option"><input type="radio" name="upiOption" value="Indusind Cred Rupay UPI"> Indusind Cred Rupay UPI</label>
+                                <label class="radio-option"><input type="radio" name="upiOption" value="Axis Neo Rupay UPI"> Axis Neo Rupay UPI</label>
+                                <label class="radio-option"><input type="radio" name="upiOption" value="__other__"> Other</label>
+                                <input type="text" id="upi-other-text" class="payment-other-text" placeholder="Specify your UPI app" style="display:none;">
+                            </div>
+
+                            <!-- Other payment mode free text -->
+                            <div id="other-options" class="payment-options" style="display:none;">
+                                <input type="text" id="other-payment-text" placeholder="e.g., Bank transfer, Cheque, etc.">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label for="category">Category</label>
                             <select id="category" name="category">
                                 <option value="">Select category</option>
-                                <option value="food">Food</option>
+                                <option value="food">Food Order</option>
                                 <option value="grocery">Grocery</option>
                                 <option value="shopping">Shopping</option>
                                 <option value="restaurant">Restaurant</option>
+                                <option value="travel">Travel</option>
                                 <option value="others">Others</option>
                             </select>
                         </div>
@@ -103,10 +145,11 @@
                             </select>
                             <select id="filter-category" class="filter-select">
                                 <option value="">All Categories</option>
-                                <option value="food">Food</option>
+                                <option value="food">Food Order</option>
                                 <option value="grocery">Grocery</option>
                                 <option value="shopping">Shopping</option>
                                 <option value="restaurant">Restaurant</option>
+                                <option value="travel">Travel</option>
                                 <option value="others">Others</option>
                             </select>
                         </div>

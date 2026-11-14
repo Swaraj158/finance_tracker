@@ -553,3 +553,300 @@ ction List Styles */
         margin: 0 auto;
     }
 }
+
+/* Payment method details: radio options for Card / UPI */
+.payment-options {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    min-height: 44px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.radio-option:has(input:checked) {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.06);
+}
+
+.radio-option input[type="radio"] {
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    appearance: auto;
+    width: auto;
+    height: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    accent-color: #e74c3c;
+    cursor: pointer;
+}
+
+.payment-other-text {
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 480px) {
+    .payment-options {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ===== Theme toggle button ===== */
+.theme-toggle {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    border: 2px solid #e74c3c;
+    background: transparent;
+    color: #e74c3c;
+    border-radius: 8px;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, color 0.3s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 110;
+}
+
+.theme-toggle:hover {
+    background: #e74c3c;
+    color: #fff;
+}
+
+/* ===== Dark theme overrides =====
+   The chosen theme is applied via data-theme on <html> (see the inline
+   script in <head> and setupTheme/toggleTheme in script.js). Overrides are
+   scoped to [data-theme="dark"] so the light theme stays untouched. Accent
+   colors are deliberately muted so they read on dark without glowing. */
+[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+    background-color: #0f1117;
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] header {
+    background: #1b1e25;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] header h1 {
+    color: #f1f3f5;
+}
+
+[data-theme="dark"] .nav-btn {
+    background: #1b1e25;
+    color: #d0857c;
+    border-color: #d0857c;
+}
+
+[data-theme="dark"] .nav-btn:hover,
+[data-theme="dark"] .nav-btn.active {
+    background: #d0857c;
+    color: #1b1e25;
+}
+
+[data-theme="dark"] .theme-toggle {
+    border-color: #d0857c;
+    color: #d0857c;
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+    background: #d0857c;
+    color: #1b1e25;
+}
+
+[data-theme="dark"] .form-container {
+    background: #1b1e25;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .form-container h2 {
+    color: #f1f3f5;
+}
+
+[data-theme="dark"] .form-group label {
+    color: #aab0bc;
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+    background-color: #14161c;
+    border-color: #2c313c;
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] .form-group textarea::placeholder {
+    color: #6b7280;
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus {
+    border-color: #d0857c;
+    box-shadow: 0 0 0 3px rgba(208, 133, 124, 0.22);
+}
+
+[data-theme="dark"] .form-group select option,
+[data-theme="dark"] .filter-select option {
+    background-color: #14161c;
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] .submit-btn {
+    background: #358265;
+}
+
+[data-theme="dark"] .submit-btn:hover {
+    background: #2c6b53;
+}
+
+[data-theme="dark"] .radio-option {
+    border-color: #2c313c;
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] .radio-option:has(input:checked) {
+    border-color: #d0857c;
+    background: rgba(208, 133, 124, 0.14);
+}
+
+[data-theme="dark"] .radio-option input[type="radio"] {
+    accent-color: #d0857c;
+}
+
+[data-theme="dark"] .transactions-container {
+    background: #1b1e25;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .transactions-header h2 {
+    color: #f1f3f5;
+}
+
+[data-theme="dark"] .summary-card {
+    background: #14161c;
+    border-color: #2c313c;
+}
+
+[data-theme="dark"] .summary-label {
+    color: #8b919e;
+}
+
+[data-theme="dark"] .summary-value {
+    color: #d0857c;
+}
+
+[data-theme="dark"] .filters-container {
+    border-color: #2c313c;
+}
+
+[data-theme="dark"] .filter-select,
+[data-theme="dark"] .filter-input {
+    background: #14161c;
+    border-color: #2c313c;
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] .filter-select:focus,
+[data-theme="dark"] .filter-input:focus {
+    border-color: #d0857c;
+}
+
+[data-theme="dark"] .clear-filters-btn {
+    background: #3a3f4b;
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] .clear-filters-btn:hover {
+    background: #4a505d;
+}
+
+[data-theme="dark"] .transaction-item {
+    background: #14161c;
+    border-color: #2c313c;
+}
+
+[data-theme="dark"] .transaction-item:hover {
+    background: #1f232c;
+}
+
+[data-theme="dark"] .transaction-category {
+    color: #f1f3f5;
+}
+
+[data-theme="dark"] .transaction-details {
+    color: #9aa0ac;
+}
+
+[data-theme="dark"] .transaction-date {
+    color: #8b919e;
+}
+
+[data-theme="dark"] .transaction-amount {
+    color: #d0857c;
+}
+
+[data-theme="dark"] .transaction-payment {
+    color: #9aa0ac;
+}
+
+[data-theme="dark"] .transaction-remarks {
+    color: #8b919e;
+}
+
+[data-theme="dark"] .payment-cash {
+    background: #1e3a2a;
+    color: #6fbf93;
+}
+
+[data-theme="dark"] .payment-card {
+    background: #1c2c4d;
+    color: #9cc4ff;
+}
+
+[data-theme="dark"] .payment-upi {
+    background: #3a3014;
+    color: #ffd966;
+}
+
+[data-theme="dark"] .payment-other {
+    background: #2c303a;
+    color: #c0c4cc;
+}
+
+[data-theme="dark"] .no-transactions {
+    color: #8b919e;
+}
+
+[data-theme="dark"] .notification.success {
+    background: #358265;
+}
+
+[data-theme="dark"] .notification.error {
+    background: #b5564c;
+}
