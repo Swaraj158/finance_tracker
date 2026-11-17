@@ -396,6 +396,36 @@ ction List Styles */
     background: #5a6268;
 }
 
+.transactions-header {
+    position: relative;
+}
+
+.export-icon-btn {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 2px solid #e74c3c;
+    background: transparent;
+    color: #e74c3c;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.export-icon-btn:hover {
+    background: #e74c3c;
+    color: #fff;
+}
+
 .transactions-list {
     max-height: 60vh;
     overflow-y: auto;
@@ -597,6 +627,29 @@ ction List Styles */
     grid-column: 1 / -1;
 }
 
+/* Split toggle (boolean flag per entry) */
+.form-group .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.form-group .checkbox-option input[type="checkbox"] {
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    appearance: auto;
+    width: auto;
+    height: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    accent-color: #e74c3c;
+    cursor: pointer;
+}
+
 @media (min-width: 480px) {
     .payment-options {
         grid-template-columns: 1fr 1fr;
@@ -739,6 +792,14 @@ ction List Styles */
     accent-color: #d0857c;
 }
 
+[data-theme="dark"] .form-group .checkbox-option {
+    color: #e6e8ec;
+}
+
+[data-theme="dark"] .form-group .checkbox-option input[type="checkbox"] {
+    accent-color: #d0857c;
+}
+
 [data-theme="dark"] .transactions-container {
     background: #1b1e25;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
@@ -784,6 +845,16 @@ ction List Styles */
 
 [data-theme="dark"] .clear-filters-btn:hover {
     background: #4a505d;
+}
+
+[data-theme="dark"] .export-icon-btn {
+    border-color: #d0857c;
+    color: #d0857c;
+}
+
+[data-theme="dark"] .export-icon-btn:hover {
+    background: #d0857c;
+    color: #1b1e25;
 }
 
 [data-theme="dark"] .transaction-item {

@@ -19,6 +19,39 @@ function categoryLabel(value) {
     return CATEGORY_LABELS[value] || (value.charAt(0).toUpperCase() + value.slice(1));
 }
 
+// Maps stored payment mode values to readable labels (used by CSV export).
+const PAYMENT_LABELS = {
+    cash: 'Cash',
+    card: 'Card',
+    upi: 'UPI',
+    other: 'Other'
+};
+
+function paymentModeLabel(value) {
+    if (!value) return 'Other';
+    return PAYMENT_LABELS[value] || (value.charAt(0).toUpperCase() + value.slice(1));
+}
+
+// Comparator: sort by entry-added timestamp, newest first; entries without
+// a timestamp sort to the end.
+function byTimestampDesc(a, b) {
+    const ta = a.timestamp || '';
+    const tb = b.timestamp || '';
+    if (!ta && !tb) return 0;
+    if (!ta) return 1;
+    if (!tb) return -1;
+    return tb.localeCompare(ta);
+}
+
+// Quotes/escapes a CSV cell so commas, quotes and newlines are safe.
+function csvEscape(value) {
+    const s = value == null ? '' : String(value);
+    if (/[",\r\n]/.test(s)) {
+        return '"' + s.replace(/"/g, '""') + '"';
+    }
+    return s;
+}
+
 class FinanceTracker {
     constructor() {
         this.expenses = this.loadExpenses();
@@ -32,6 +65,7 @@ class FinanceTracker {
         this.setupTransactionFilters();
         this.renderTransactions();
         this.setupTheme();
+        this.setupExport();
     }
 
     setupNavigation() {
@@ -187,6 +221,56 @@ class FinanceTracker {
         if (meta) meta.setAttribute('content', next === 'dark' ? '#1b1e25' : '#e74c3c');
     }
 
+    // Wire up the CSV export button on the View Transactions page.
+    setupExport() {
+        const btn = document.getElementById('export-csv-btn');
+        if (btn) btn.addEventListener('click', () => this.exportCSV());
+    }
+
+    // Export all expenses as a CSV file and trigger a download. Exports the
+    // full dataset (independent of filters) so it works as a backup. Cells are
+    // escaped and a UTF-8 BOM is added for clean Excel handling.
+    exportCSV() {
+        if (!this.expenses || this.expenses.length === 0) {
+            this.showNotification('No transactions to export', 'error');
+            return;
+        }
+
+        const header = ['Date', 'Category', 'Amount', 'Payment Mode', 'Payment Details', 'Remarks', 'Added On'];
+        const lines = [header.map(csvEscape).join(',')];
+
+        const rows = [...this.expenses].sort(byTimestampDesc);
+        rows.forEach(expense => {
+            const addedOn = expense.timestamp
+                ? new Date(expense.timestamp).toLocaleString('en-IN')
+                : '';
+            lines.push([
+                expense.date || '',
+                categoryLabel(expense.category),
+                expense.amount != null ? expense.amount : '',
+                paymentModeLabel(expense.paymentMode),
+                expense.paymentComment || '',
+                expense.remarks || '',
+                addedOn
+            ].map(csvEscape).join(','));
+        });
+
+        // CRLF line endings + UTF-8 BOM for spreadsheet compatibility.
+        const csv = '\uFEFF' + lines.join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const today = new Date().toISOString().split('T')[0];
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `finance-tracker-export-${today}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        this.showNotification(`Exported ${rows.length} transactions`, 'success');
+    }
+
     setTodayDate() {
         const dateInput = document.getElementById('date');
         const today = new Date().toISOString().split('T')[0];
@@ -204,6 +288,7 @@ class FinanceTracker {
             category: formData.get('category') || 'others',
             date: formData.get('date') || new Date().toISOString().split('T')[0],
             remarks: formData.get('remarks') || '',
+            split: document.getElementById('split')?.checked || false,
             timestamp: new Date().toISOString()
         };
 
@@ -323,7 +408,7 @@ class FinanceTracker {
             if (filterDateTo && expenseDate > new Date(filterDateTo)) return false;
 
             return true;
-        }).sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, newest first
+        }).sort(byTimestampDesc); // Sort by entry-added timestamp, newest first
     }
 
     updateSummary(expenses) {
